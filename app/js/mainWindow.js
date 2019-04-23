@@ -1,5 +1,7 @@
 const electron = require('electron');
+const remote = require('electron').remote;
 const { ipcRenderer } = electron;
+const { Menu } = remote;
 
 const ul = document.querySelector('.itemList');
 var tempItem;
@@ -11,17 +13,9 @@ addButton.addEventListener('click', addItemEditor);
 // Form keys
 ul.addEventListener('keyup', (e) => {
     if (e.keyCode === 13 && e.target.nodeName === "INPUT") {
-        //addItem(e);
-        e.preventDefault();
         document.querySelector('.applyButton').click();
-    } else if (e.keyCode === 27) {
-        if (e.target.className === "activeItemEdit") {
-            ul.replaceChild(tempItem, e.target);
-        } else if (e.target.className === "activeItemCreate") {
-            e.target.remove();
-        }
-
-        document.querySelector('.applyButton').remove();
+    } else if (e.keyCode === 27 && e.target.nodeName === "INPUT") {
+        document.querySelector('.cancelButton').click();
     }
 })
 
@@ -34,40 +28,54 @@ ul.addEventListener('dblclick', (e) => {
 
 // Functions
 function addItemEditor(e) {
-    const li = document.createElement('input');
-    li.type = "text";
-    li.placeholder = "What do you need to buy today?";
-    li.className = "activeItemCreate";
+    if (document.querySelector('.emptyMsg').style.display !== "none") {
+        document.querySelector('.emptyMsg').style.display = "none";
+    }
 
+    const li = document.createElement('li');
+    const input = document.createElement('input');
+    input.type = "text";
+    input.placeholder = "What do you need to buy today?";
+    input.className = "activeItemCreate";
+
+    li.appendChild(input);
     ul.appendChild(li);
-    li.focus();
+    input.focus();
 
-    createButton(li);
+    createApplyButton(input);
+    createCancelButton(input);
 }
 
 function addItem(e) {
-    const li = document.createElement('li');
+    const li = e.target.parentElement;
     const itemText = document.createTextNode(e.target.previousSibling.value);
-    li.appendChild(itemText);
 
-    ul.replaceChild(li, e.target.previousSibling);
+    li.replaceChild(itemText, e.target.previousSibling);
+    e.target.nextSibling.remove();
     e.target.remove();
+
+    itemText.parentElement.addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        itemMenu.popup({ window: remote.getCurrentWindow() })
+      }, false)
 }
 
 function editItem(e) {
-    const li = document.createElement('input');
-    li.type = "text";
-    li.value = e.target.innerHTML;
-    li.className = "activeItemEdit";
+    console.log(e);
+    const input = document.createElement('input');
+    input.type = "text";
+    input.value = e.target.innerHTML;
+    input.className = "activeItemEdit";
 
-    tempItem = e.target;
-    ul.replaceChild(li, e.target);
-    li.focus();
+    tempItem = e.target.childNodes[0];
+    e.target.replaceChild(input, e.target.childNodes[0]);
+    input.focus();
 
-    createButton(li);
+    createApplyButton(input);
+    createCancelButton(input);
 }
 
-function createButton(e) {
+function createApplyButton(e) {
     const btn = document.createElement('button');
     btn.className = "applyButton";
 
@@ -83,3 +91,73 @@ function createButton(e) {
 
     e.insertAdjacentElement('afterend', btn);
 }
+
+function createCancelButton(e) {
+    const btn = document.createElement('button');
+    btn.className = "cancelButton";
+    const btnText = document.createTextNode("Cancel");
+
+    btn.appendChild(btnText);
+    e.nextSibling.insertAdjacentElement('afterend', btn)
+
+    btn.addEventListener('click', () => {
+        if (e.className === "activeItemEdit") {
+            e.parentElement.replaceChild(tempItem, e);
+            document.querySelector('.applyButton').remove();
+            btn.remove();
+        } else if (e.className === "activeItemCreate") {
+            e.parentElement.remove();
+
+            if (document.querySelector('.emptyMsg').style.display == "none" && ul.childElementCount <= 0) {
+                document.querySelector('.emptyMsg').style.display = "inline";
+            }
+        }
+    });
+}
+
+/*function createDeleteButton(e) {
+    const btn = document.createElement('button');
+    const btnText = document.createTextNode('x');
+    btn.appendChild(btnText);
+
+    btn.className = "deleteButton";
+    btn.style.display = "none";
+    //console.log(e);
+
+    e.insertAdjacentElement('afterend', btn);
+    e.addEventListener('mouseover', () => {
+        btn.style.display = "inline";
+    })
+
+    e.addEventListener('mouseout', () => {
+        btn.style.display = "none";
+    })
+
+    btn.addEventListener('click', () => {
+        e.remove();
+        btn.remove();
+    });
+}*/
+
+/*const menuTemplate = [
+    {
+        label: 'Edit item',
+        click() {
+            editItem();
+        }
+    },
+    {
+        label: 'Delete item',
+        click() {
+            //mainWindow.webContents.send('item:clear');
+            console.log("cool");
+        }
+    },
+    {
+        label: 'Inspect',
+        click() {
+            remote.getCurrentWindow().toggleDevTools();
+        }
+    }
+];
+const itemMenu = Menu.buildFromTemplate(menuTemplate);*/

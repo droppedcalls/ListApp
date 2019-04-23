@@ -1,3 +1,4 @@
+//Code from https://github.com/binaryfunt/electron-seamless-titlebar-tutorial
 const remote = require('electron').remote;
 
 if (process.platform !== 'darwin') {

@@ -11,13 +11,14 @@ body {
 
 input {
     border: none;
-    width: 80%;
+    width: 90%;
     font-size: 16px;
     box-sizing: border-box;
 }
 
 li {
     padding-bottom: 8px;
+    width: 100%;
 }
 
 button {
@@ -32,10 +33,6 @@ button:hover {
     color: black;
 }
 
-.addButton {
-    font-size: 20px;
-}
-
 .flex-container {
     display: flex;
     align-items: center;
@@ -45,6 +42,15 @@ button:hover {
     color: darkgray;
 }
 
+.list {
+    padding: 0px 50px;
+}
+
+.emptyMsg {
+    color: darkgray;
+}
+
+/* Windows titlebar related styling, from https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 .titlebar {
     -webkit-app-region: drag;
     display: block;
