@@ -6,8 +6,24 @@
     <link type="text/css" rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
+    <div class="titlebar">
+      <div id="window-controls">
+        <div class="button" id="min-button">
+          <span>&#xE921;</span>
+        </div>
+        <div class="button" id="max-button">
+          <span>&#xE922;</span>
+        </div>
+        <div class="button" id="restore-button">
+          <span>&#xE923;</span>
+        </div>
+        <div class="button" id="close-button">
+          <span>&#xE8BB;</span>
+        </div>
+      </div>
+    </div>
     <div class="flex-container">
-      <div id="main" style="flex-grow: 8">
+      <div class="title" style="flex-grow: 8">
         <h1>Shopping list</h1>
       </div>
       <div class="add" style="flex-grow: 1">
@@ -17,5 +33,9 @@
     <ul class="itemList"></ul>
     
     <script src="js/mainWindow.js"></script>
+    <script>
+      // You can also require other files to run in this process
+      require('../renderer');
+    </script>
   </body>
 </html>
