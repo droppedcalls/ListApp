@@ -11,13 +11,17 @@ addButton.addEventListener('click', addItemEditor);
 // Form keys
 ul.addEventListener('keyup', (e) => {
     if (e.keyCode === 13 && e.target.nodeName === "INPUT") {
-        addItem(e);
+        //addItem(e);
+        e.preventDefault();
+        document.querySelector('.applyButton').click();
     } else if (e.keyCode === 27) {
         if (e.target.className === "activeItemEdit") {
             ul.replaceChild(tempItem, e.target);
         } else if (e.target.className === "activeItemCreate") {
             e.target.remove();
         }
+
+        document.querySelector('.applyButton').remove();
     }
 })
 
@@ -38,24 +42,16 @@ function addItemEditor(e) {
     ul.appendChild(li);
     li.focus();
 
-    createButton(e);
+    createButton(li);
 }
-
-//document.querySelector('.applyButton').addEventListener('click', addItem);
 
 function addItem(e) {
     const li = document.createElement('li');
-    const itemText = document.createTextNode(e.target.value);
+    const itemText = document.createTextNode(e.target.previousSibling.value);
     li.appendChild(itemText);
-    ul.appendChild(li);
 
-    if (tempItem == null) {
-        e.target.remove();
-    } else {
-        ul.replaceChild(li, e.target);
-    }
-    
-    document.querySelector('.applyButton').remove();
+    ul.replaceChild(li, e.target.previousSibling);
+    e.target.remove();
 }
 
 function editItem(e) {
@@ -64,17 +60,26 @@ function editItem(e) {
     li.value = e.target.innerHTML;
     li.className = "activeItemEdit";
 
-    ul.appendChild(li);
-
     tempItem = e.target;
     ul.replaceChild(li, e.target);
-    createButton(e);
     li.focus();
+
+    createButton(li);
 }
 
 function createButton(e) {
     const btn = document.createElement('button');
     btn.className = "applyButton";
-    btn.appendChild(document.createTextNode("Add"));
-    ul.appendChild(btn);
+
+    var btnText;
+    if (e.className === "activeItemCreate") {
+        btnText = document.createTextNode("Add");
+    } else if (e.className === "activeItemEdit") {
+        btnText = document.createTextNode("Edit");
+    }
+
+    btn.appendChild(btnText);
+    btn.addEventListener('click', addItem);
+
+    e.insertAdjacentElement('afterend', btn);
 }

@@ -14,6 +14,7 @@ function createWindow () {
     show: false,
     backgroundColor: '#2d2d2d',
     status: 'empty',
+    titleBarStyle: 'hiddenInset',
     webPreferences: {
       nodeIntegration: true
     }

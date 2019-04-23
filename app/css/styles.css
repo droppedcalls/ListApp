@@ -16,29 +16,33 @@ input {
     -webkit-app-region: no-drag;
     border: none;
     width: 80%;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
 li {
     -webkit-app-region: no-drag;
+    padding-bottom: 8px;
 }
 
 button {
     -webkit-app-region: no-drag;
     border: none;
     text-align: center;
+    transition-duration: 0.4s;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: white;
+    color: black;
+}
+
+.addButton {
+    font-size: 20px;
 }
 
 .flex-container {
     display: flex;
     align-items: center;
-}
-
-.addButton {
-    transition-duration: 0.4s;
-    font-size: 20px;
-}
-
-.addButton:hover {
-    background-color: white;
-    color: black;
 }
