@@ -1,4 +1,4 @@
-# ShoppingList
+# ListApp
 
 A shopping list.
 
