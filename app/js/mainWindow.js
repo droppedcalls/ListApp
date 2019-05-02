@@ -1,10 +1,9 @@
 const electron = require('electron');
-const remote = require('electron').remote;
 const { ipcRenderer } = electron;
-const { Menu } = remote;
 
 const ul = document.querySelector('.itemList');
 var tempItem;
+var tempTitle;
 
 // Listeners
 const addButton = document.querySelector(".addButton");
@@ -26,7 +25,32 @@ ul.addEventListener('dblclick', (e) => {
     }
 });
 
+document.querySelector('.title-text').addEventListener('dblclick', editTitle);
+
 // Functions
+function editTitle(e) {
+    const input = document.createElement('input');
+    input.className = "titleEditor";
+    input.type = "text";
+    input.value = e.target.innerHTML;
+
+    tempTitle = e.target.childNodes[0];
+    e.target.replaceChild(input, e.target.childNodes[0]);
+    input.focus();
+
+    input.addEventListener('keyup', (e) => {
+        if (e.keyCode === 13) {
+            const title = document.createElement('h1');
+            const titleText = document.createTextNode(input.value);
+            title.append(titleText);
+            
+            e.target.parentElement.replaceChild(title, input);
+        } else if (e.keyCode === 27) {
+            e.target.parentElement.replaceChild(tempTitle, input);
+        }
+    })
+}
+
 function addItemEditor(e) {
     if (document.querySelector('.emptyMsg').style.display !== "none") {
         document.querySelector('.emptyMsg').style.display = "none";
@@ -50,18 +74,16 @@ function addItem(e) {
     const li = e.target.parentElement;
     const itemText = document.createTextNode(e.target.previousSibling.value);
 
-    li.replaceChild(itemText, e.target.previousSibling);
-    e.target.nextSibling.remove();
-    e.target.remove();
+    if (e.target.previousSibling.className === "activeItemEdit") {
+        document.querySelector('.deleteButton').remove();
+    }
 
-    itemText.parentElement.addEventListener('contextmenu', (e) => {
-        e.preventDefault()
-        itemMenu.popup({ window: remote.getCurrentWindow() })
-      }, false)
+    li.replaceChild(itemText, e.target.previousSibling);
+    document.querySelector('.cancelButton').remove();
+    document.querySelector('.applyButton').remove();
 }
 
 function editItem(e) {
-    console.log(e);
     const input = document.createElement('input');
     input.type = "text";
     input.value = e.target.innerHTML;
@@ -73,6 +95,7 @@ function editItem(e) {
 
     createApplyButton(input);
     createCancelButton(input);
+    createDeleteButton(input);
 }
 
 function createApplyButton(e) {
@@ -104,6 +127,7 @@ function createCancelButton(e) {
         if (e.className === "activeItemEdit") {
             e.parentElement.replaceChild(tempItem, e);
             document.querySelector('.applyButton').remove();
+            document.querySelector('.deleteButton').remove();
             btn.remove();
         } else if (e.className === "activeItemCreate") {
             e.parentElement.remove();
@@ -115,49 +139,16 @@ function createCancelButton(e) {
     });
 }
 
-/*function createDeleteButton(e) {
+function createDeleteButton(e) {
     const btn = document.createElement('button');
-    const btnText = document.createTextNode('x');
+    btn.className = "deleteButton";
+
+    const btnText = document.createTextNode('Delete');
     btn.appendChild(btnText);
 
-    btn.className = "deleteButton";
-    btn.style.display = "none";
-    //console.log(e);
-
-    e.insertAdjacentElement('afterend', btn);
-    e.addEventListener('mouseover', () => {
-        btn.style.display = "inline";
-    })
-
-    e.addEventListener('mouseout', () => {
-        btn.style.display = "none";
-    })
+    e.nextSibling.nextSibling.insertAdjacentElement('afterend', btn);
 
     btn.addEventListener('click', () => {
-        e.remove();
-        btn.remove();
+        e.parentElement.remove();
     });
-}*/
-
-/*const menuTemplate = [
-    {
-        label: 'Edit item',
-        click() {
-            editItem();
-        }
-    },
-    {
-        label: 'Delete item',
-        click() {
-            //mainWindow.webContents.send('item:clear');
-            console.log("cool");
-        }
-    },
-    {
-        label: 'Inspect',
-        click() {
-            remote.getCurrentWindow().toggleDevTools();
-        }
-    }
-];
-const itemMenu = Menu.buildFromTemplate(menuTemplate);*/
+}

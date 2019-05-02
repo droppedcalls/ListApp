@@ -9,9 +9,12 @@ body {
     margin: 0;
 }
 
+h1 {
+    font-size: 32px;
+}
+
 input {
     border: none;
-    width: 90%;
     font-size: 16px;
     box-sizing: border-box;
 }
@@ -33,10 +36,16 @@ button:hover {
     color: black;
 }
 
+.deleteButton:hover {
+    background-color: #e81123;
+    color: white;
+}
+
 .flex-container {
     display: flex;
     align-items: center;
     padding-left: 50px;
+    padding-right: 50px;
     padding-top: 20px;
     overflow-y: auto;
     color: darkgray;
@@ -49,6 +58,23 @@ button:hover {
 .emptyMsg {
     color: darkgray;
 }
+
+.titleEditor {
+    font-size: 32px;
+    width: 100%
+}
+
+.activeItemCreate {
+    width: 100%;
+}
+
+.activeItemEdit {
+    width: 100%;
+}
+
+/* input {
+    background-color: black;
+} */
 
 /* Windows titlebar related styling, from https://github.com/binaryfunt/electron-seamless-titlebar-tutorial */
 .titlebar {
