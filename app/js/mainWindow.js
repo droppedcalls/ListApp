@@ -9,11 +9,18 @@ var tempTitle;
 const addButton = document.querySelector(".addButton");
 addButton.addEventListener('click', addItemEditor);
 
+// Events
+const enterEvent = new KeyboardEvent('keyup', {
+    key: 'Enter',
+    code: 'Enter'
+});
+
 // Form keys
 ul.addEventListener('keyup', (e) => {
-    if (e.keyCode === 13 && e.target.nodeName === "INPUT") {
+    //console.log(e.target);
+    if (e.key === 'Enter' && e.target.nodeName === "INPUT") {
         document.querySelector('.applyButton').click();
-    } else if (e.keyCode === 27 && e.target.nodeName === "INPUT") {
+    } else if (e.key === 'Escape' && e.target.nodeName === "INPUT") {
         document.querySelector('.cancelButton').click();
     }
 })
@@ -39,15 +46,19 @@ function editTitle(e) {
     input.focus();
 
     input.addEventListener('keyup', (e) => {
-        if (e.keyCode === 13) {
+        if (e.key === 'Enter') {
             const title = document.createElement('h1');
             const titleText = document.createTextNode(input.value);
             title.append(titleText);
             
             e.target.parentElement.replaceChild(title, input);
-        } else if (e.keyCode === 27) {
+        } else if (e.key === 'Escape') {
             e.target.parentElement.replaceChild(tempTitle, input);
         }
+    })
+
+    input.addEventListener('blur', (e) => {
+        e.target.dispatchEvent(enterEvent);
     })
 }
 
@@ -68,6 +79,10 @@ function addItemEditor(e) {
 
     createApplyButton(input);
     createCancelButton(input);
+
+    input.addEventListener('blur', (e) => {
+        input.dispatchEvent(enterEvent);
+    })
 }
 
 function addItem(e) {
